@@ -1,10 +1,23 @@
 <script setup lang="ts">
-import { defineProps } from "vue";
+import { defineComponent, ref } from "vue";
+import ModalCreate from "./modals/Create.vue";
 
-defineProps({
+const modalShow = ref(false);
+
+const props = defineProps({
   title: {
     type: String,
     required: true,
+  },
+  id: {
+    type: Number,
+    required: true,
+  },
+});
+
+defineComponent({
+  components: {
+    ModalCreate,
   },
 });
 </script>
@@ -19,10 +32,16 @@ defineProps({
     </header>
     <div class="content">
       <slot></slot>
-      <button class="create">
+      <button class="create" @click="modalShow = true">
         <span>Добавить запись</span>
       </button>
     </div>
+    <ModalCreate
+      type="add"
+      :listID="props.id"
+      :show="modalShow"
+      @close="modalShow = false"
+    />
   </div>
 </template>
 
