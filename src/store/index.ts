@@ -45,6 +45,17 @@ export const useKanbanStore = defineStore("kanban", {
     itemCreate(item: Item) {
       this.$state.items.push(item);
     },
+    itemChange(item: Item) {
+      const idx = this.$state.items.findIndex((el) => el.id === item.id);
+      this.$state.items[idx] = item;
+    },
+    itemDelete(itemID: number) {
+      const arr = this.$state.items;
+      arr.splice(
+        arr.findIndex((el) => el.id === itemID),
+        1
+      );
+    },
   },
   getters: {
     getList: (state) => {

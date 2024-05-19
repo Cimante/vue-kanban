@@ -1,34 +1,39 @@
 <script setup lang="ts">
-import { reactive } from "vue";
+import { computed, toRaw } from "vue";
 import { Item } from "../../types/item";
 import { useKanbanStore } from "../../store";
 
 const store = useKanbanStore();
 
-const onSave = (data: Item) => {
-  store.itemCreate(data);
-  emit("close");
-};
-
 const props = defineProps({
+  itemID: {
+    type: Number,
+    required: true,
+  },
   show: {
     type: Boolean,
     default: false,
-  },
-  listID: {
-    type: Number,
-    required: true,
   },
 });
 
 const emit = defineEmits(["close"]);
 
-const data = reactive<Item>({
-  id: Number(new Date().getTime()),
-  title: "",
-  text: "",
-  listID: props.listID,
-});
+const data = computed(() =>
+  structuredClone(
+    toRaw(store.items.filter((item) => item.id === props.itemID)[0])
+  )
+);
+
+const onSave = (data: Item) => {
+  store.itemChange(data);
+  emit("close");
+};
+
+const onDelete = (data: Item) => {
+  emit("close");
+  store.itemDelete(data.id);
+  console.log(data.id);
+};
 </script>
 
 <template>
@@ -45,6 +50,7 @@ const data = reactive<Item>({
         <textarea id="text" type="text" v-model="data.text" rows="7"></textarea>
       </div>
       <div class="Popup-controls">
+        <button class="delete" @click="onDelete(data)">Удалить</button>
         <button @click="$emit('close')">Закрыть</button>
         <button @click="onSave(data)">Сохранить</button>
       </div>
@@ -118,6 +124,10 @@ const data = reactive<Item>({
     display: flex;
     justify-content: end;
     gap: 8px;
+
+    .delete {
+      margin: 0 auto 0 0;
+    }
 
     button {
       padding: 2px 8px;

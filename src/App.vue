@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import Column from "./components/Column.vue";
+import ModalChange from "./components/modals/Change.vue";
 import { Item } from "./types/item";
 import { useKanbanStore } from "./store";
 
 defineComponent({
   components: {
     Column,
+    ModalChange,
   },
 });
 
@@ -30,10 +32,24 @@ const textCrop = (text: String): String => {
     return text;
   }
 };
+
+const modalChangeShow = ref(false);
+const modalChangeID = ref(0);
+
+const modalChangeActivate = (id: number): void => {
+  modalChangeID.value = id;
+  modalChangeShow.value = true;
+};
 </script>
 
 <template>
   <main class="App">
+    <ModalChange
+      v-if="modalChangeShow"
+      :show="modalChangeShow"
+      :itemID="modalChangeID"
+      @close="modalChangeShow = false"
+    />
     <Column
       class="drop-zone"
       :title="list.title"
@@ -50,6 +66,7 @@ const textCrop = (text: String): String => {
         class="drag-el"
         draggable="true"
         @dragstart="startDrag($event, item)"
+        @click="modalChangeActivate(item.id)"
       >
         <p class="card-title">{{ item.title }}</p>
         <span class="card-text">{{ textCrop(item.text) }}</span>
