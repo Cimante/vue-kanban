@@ -10,10 +10,6 @@ const props = defineProps({
     type: Number,
     required: true,
   },
-  show: {
-    type: Boolean,
-    default: false,
-  },
 });
 
 const emit = defineEmits(["close"]);
@@ -32,22 +28,30 @@ const onSave = (data: Item) => {
 const onDelete = (data: Item) => {
   emit("close");
   store.itemDelete(data.id);
-  console.log(data.id);
 };
 </script>
 
 <template>
-  <div class="Popup" :class="{ show: show }">
+  <div class="Popup show">
     <div class="Popup-overlay"></div>
     <div class="Popup-container">
       <div class="Popup-header">
-        <h3>Добавление новой задачи</h3>
+        <h3>Изменение задачи</h3>
       </div>
       <div class="Popup-content">
-        <label for="title">Заголовок</label>
-        <input id="title" type="text" v-model="data.title" />
-        <label for="text">Описание</label>
-        <textarea id="text" type="text" v-model="data.text" rows="7"></textarea>
+        <div class="input-group">
+          <label for="title">Заголовок</label>
+          <input id="title" type="text" v-model="data.title" />
+        </div>
+        <div class="input-group">
+          <label for="text">Описание</label>
+          <textarea
+            id="text"
+            type="text"
+            v-model="data.text"
+            rows="7"
+          ></textarea>
+        </div>
       </div>
       <div class="Popup-controls">
         <button class="delete" @click="onDelete(data)">Удалить</button>
@@ -91,7 +95,7 @@ const onDelete = (data: Item) => {
     display: grid;
     grid-template-rows: 24px 1fr 24px;
     width: 40vmin;
-    height: 35vmin;
+    min-height: 35vmin;
     background-color: white;
     padding: 16px;
     border-radius: 8px;
@@ -108,15 +112,25 @@ const onDelete = (data: Item) => {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 8px;
+    gap: 24px;
 
-    textarea {
-      padding: 4px;
-      resize: none;
-    }
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
 
-    input {
-      padding: 4px;
+      label {
+        margin-bottom: 4px;
+      }
+
+      textarea {
+        padding: 4px;
+        resize: none;
+      }
+
+      input {
+        padding: 4px;
+      }
     }
   }
 

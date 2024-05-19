@@ -46,7 +46,6 @@ const modalChangeActivate = (id: number): void => {
   <main class="App">
     <ModalChange
       v-if="modalChangeShow"
-      :show="modalChangeShow"
       :itemID="modalChangeID"
       @close="modalChangeShow = false"
     />
