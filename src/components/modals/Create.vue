@@ -6,7 +6,7 @@ import { useKanbanStore } from "../../store";
 const store = useKanbanStore();
 
 const onSave = (data: Item) => {
-  store.itemCreate(data, props.listID);
+  store.itemCreate(data);
   emit("close");
 };
 
@@ -21,13 +21,13 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["delete", "close", "save"]);
+const emit = defineEmits(["delete", "close"]);
 
 const data = reactive<Item>({
   id: Number(new Date().getTime()),
   title: "",
   text: "",
-  list: props.listID,
+  listID: props.listID,
 });
 </script>
 

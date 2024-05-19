@@ -12,17 +12,15 @@ defineComponent({
 
 const store = useKanbanStore();
 
-const startDrag = (e: any, item: Item, listID: number): void => {
+const startDrag = (e: any, item: Item): void => {
   e.dataTransfer.dropEffect = "move";
   e.dataTransfer.effectAllowed = "move";
   e.dataTransfer.setData("itemID", item.id);
-  e.dataTransfer.setData("listFromID", listID);
 };
 
-const onDrop = (e: any, listToID: number): void => {
+const onDrop = (e: any, listTo: number): void => {
   const itemID = e.dataTransfer.getData("itemID");
-  const listFromID = e.dataTransfer.getData("listFromID");
-  store.itemSwap(+itemID, +listFromID, listToID);
+  store.itemSwap(+itemID, listTo);
 };
 
 const textCrop = (text: String): String => {
@@ -39,19 +37,19 @@ const textCrop = (text: String): String => {
     <Column
       class="drop-zone"
       :title="list.title"
-      v-for="(list, listIdx) in store.lists"
-      :key="`${list.id}__${listIdx}`"
-      :id="listIdx + 1"
-      @drop="onDrop($event, listIdx + 1)"
+      v-for="list in store.lists"
+      :key="`${list.id}__${list.id}`"
+      :id="list.id"
+      @drop="onDrop($event, list.id)"
       @dragenter.prevent
       @dragover.prevent
     >
       <div
-        v-for="(item, idx) in store.getList(listIdx + 1)"
+        v-for="(item, idx) in store.getList(list.id)"
         :key="idx"
         class="drag-el"
         draggable="true"
-        @dragstart="startDrag($event, item, listIdx + 1)"
+        @dragstart="startDrag($event, item)"
       >
         <p class="card-title">{{ item.title }}</p>
         <span class="card-text">{{ textCrop(item.text) }}</span>
